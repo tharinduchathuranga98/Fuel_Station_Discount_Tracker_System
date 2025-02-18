@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\FuelTypeController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
@@ -103,3 +104,9 @@ Route::post('/vehicles/create', [VehicleController::class, 'register'])->name('v
 
 
 
+Route::get('/fuel-type/fuel-type-management', [FuelTypeController::class, 'index'])->name('fuel-type-management')->middleware('auth');
+Route::get('/fuel-type/fuel-type-management/edit/{id}', [FuelTypeController::class, 'show'])->name('fuel-type.edit')->middleware('auth');
+Route::put('/fuel-type/fuel-type-management/{id}', [FuelTypeController::class, 'update'])->name('fuel-type.update')->middleware('auth');
+Route::get('/fuel-type/fuel-type-management/create', [FuelTypeController::class, 'create'])->name('fuel-type.create')->middleware('auth');
+Route::post('/fuel-type/fuel-type-management/create', [FuelTypeController::class, 'store'])->name('fuel-type.store')->middleware('auth');
+Route::delete('/fuel-type/fuel-type-management/{id}', [FuelTypeController::class, 'destroy'])->name('fuel-type.destroy')->middleware('auth');

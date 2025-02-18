@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Validator;
 
 class FuelTypeController extends Controller
 {
+    public function create()
+    {
+        return view('fuel-type.create-fuel-type');
+    }
     // Create a new fuel type
     public function store(Request $request)
     {
@@ -32,13 +36,26 @@ class FuelTypeController extends Controller
     }
 
 
-    // Retrieve all fuel types
-    public function index()
+    public function index(Request $request)
     {
-        $fuelTypes = FuelType::orderBy('created_at', 'desc')->get();
+        $query = FuelType::query();
 
-        return response()->json($fuelTypes);
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+
+        $fuelTypes = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('fuel-type.fuel-type-management', compact('fuelTypes'));
     }
+    // // Retrieve all fuel types
+    // public function index()
+    // {
+    //     $fuelTypes = FuelType::orderBy('created_at', 'desc')->get();
+
+    //     return response()->json($fuelTypes);
+    // }
 
     // Retrieve a single fuel type
     public function show($id)
@@ -49,31 +66,45 @@ class FuelTypeController extends Controller
             return response()->json(['message' => 'Fuel type not found'], 404);
         }
 
-        return response()->json($fuelType);
+        return view('fuel-type.edit-fuel-type', compact('fuelType'));
     }
 
+    // public function edit($id)
+    // {
+    //     $fuelType = FuelType::where('id', $id)->first();
+
+    //     if (!$fuelType) {
+    //         return redirect()->route('fuel-type-management')->with('error', 'Vehicle not found.');
+    //     }
+
+    //     return view('fuel-type.edit-fuel-type', compact('fuelType'));
+    // }
     // Update a fuel type
     public function update(Request $request, $id)
-{
-    $fuelType = FuelType::find($id);
+    {
+        $fuelType = FuelType::find($id);
 
-    if (!$fuelType) {
-        return response()->json(['message' => 'Fuel type not found'], 404);
+        if (!$fuelType) {
+            return response()->json(['message' => 'Fuel type not found'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|unique:fuel_types,name,' . $id,
+            'price' => 'sometimes|required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        // Manually update fields and ensure updated_at is modified
+        $fuelType->fill($request->all());
+        $fuelType->updated_at = now();
+        $fuelType->save();
+
+        return response()->json(['message' => 'Fuel type updated successfully', 'fuel_type' => $fuelType]);
     }
 
-    $validator = Validator::make($request->all(), [
-        'name' => 'sometimes|required|string|unique:fuel_types,name,' . $id,
-        'price' => 'sometimes|required|numeric|min:0',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 400);
-    }
-
-    $fuelType->update($request->all());
-
-    return response()->json(['message' => 'Fuel type updated successfully', 'fuel_type' => $fuelType]);
-}
 
 
     // Delete a fuel type
