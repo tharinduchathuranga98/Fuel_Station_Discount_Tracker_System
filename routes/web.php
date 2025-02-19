@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\FuelCategoryController;
 use App\Http\Controllers\FuelTypeController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
@@ -92,6 +93,7 @@ Route::get('/laravel-examples/user-profile', [ProfileController::class, 'index']
 Route::put('/laravel-examples/user-profile/update', [ProfileController::class, 'update'])->name('users.update')->middleware('auth');
 
 use App\Http\Controllers\VehicleController;
+use App\Models\FuelCategory;
 
 Route::get('/vehicles/vehicle-management', [VehicleController::class, 'index'])->name('vehicle-management')->middleware('auth');
 Route::get('/vehicles/vehicle-management/{number_plate}/edit', [VehicleController::class, 'edit'])->name('vehicles.edit')->middleware('auth');
@@ -110,3 +112,11 @@ Route::put('/fuel-type/fuel-type-management/{id}', [FuelTypeController::class, '
 Route::get('/fuel-type/fuel-type-management/create', [FuelTypeController::class, 'create'])->name('fuel-type.create')->middleware('auth');
 Route::post('/fuel-type/fuel-type-management/create', [FuelTypeController::class, 'store'])->name('fuel-type.store')->middleware('auth');
 Route::delete('/fuel-type/fuel-type-management/{id}', [FuelTypeController::class, 'destroy'])->name('fuel-type.destroy')->middleware('auth');
+
+
+Route::get('/categorys/category-management', [FuelCategoryController::class, 'index'])->name('category-management')->middleware('auth');
+Route::get('/categorys/category-management/edit/{code}', [FuelCategoryController::class, 'show'])->name('category.edit')->middleware('auth');
+Route::put('/categorys/category-management/{code}', [FuelCategoryController::class, 'update'])->name('category.update')->middleware('auth');
+Route::get('/categorys/category-management/create', [FuelCategoryController::class, 'create'])->name('category.create')->middleware('auth');
+Route::post('/categorys/category-management/create', [FuelCategoryController::class, 'store'])->name('category.store')->middleware('auth');
+// Route::delete('/fuel-type/fuel-type-management/{id}', [FuelTypeController::class, 'destroy'])->name('fuel-type.destroy')->middleware('auth');

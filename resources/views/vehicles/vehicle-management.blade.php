@@ -65,16 +65,16 @@
                                                 <td class="text-center text-xs font-weight-bold">{{ $vehicle->fuelType->name ?? 'N/A' }}</td>
                                                 <td class="text-center text-xs font-weight-bold">{{ $vehicle->created_at->format('Y-m-d') }}</td>
                                                 <td class="text-center">
-                                                    <a href="{{ route('vehicles.edit', $vehicle->number_plate) }}" class="btn btn-warning btn-sm">Edit</a>
+                                                    <a href="{{ route('vehicles.edit', $vehicle->number_plate) }}" class="btn btn-warning btn-sm" style="margin: 0;">Edit</a>
                                                     <a href="{{ route('vehicles.qr', $vehicle->id) }}"
                                                         download="QR_{{ $vehicle->number_plate }}.png"
-                                                        class="btn btn-primary btn-sm">
+                                                        class="btn btn-primary btn-sm" style="margin: 0;">
                                                          Download QR Code
                                                      </a>
                                                     <form action="{{ route('vehicles.destroy', $vehicle->number_plate) }}" method="POST" style="display:inline;" id="delete-form-{{ $vehicle->number_plate }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $vehicle->number_plate }}')">Delete</button>
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ $vehicle->number_plate }}')" style="margin: 0;">Delete</button>
                                                     </form>
                                                 </td>
                                             </tr>

@@ -8,14 +8,31 @@ use App\Models\FuelType;
 
 class FuelCategoryController extends Controller
 {
-    // ✅ Get all categories
-    public function index()
+
+    public function index(Request $request)
     {
-        $categories = FuelCategory::orderBy('code', 'asc')->get();
-        return response()->json($categories);
+        $query = FuelCategory::query();
+
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+
+
+        $categorys = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return view('categorys.category-management', compact('categorys'));
     }
 
+
     // ✅ Create a new category
+    public function create()
+    {
+        // Fetch all fuel types by their code
+        $fuelTypes = FuelType::pluck('name', 'code');  // Key: code, Value: name
+
+        return view('categorys.create-category', compact('fuelTypes'));
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -38,8 +55,17 @@ class FuelCategoryController extends Controller
     public function show($code)
     {
         $category = FuelCategory::where('code', $code)->firstOrFail();
-        return response()->json($category);
+        if (!$category) {
+            return redirect()->route('category-management')->with('error', 'Category not found.');
+        }
+         // Fetch fuel types by their code
+         $fuelTypes = FuelType::pluck('name', 'code');  // Key: code, Value: name
+        // return response()->json($category);
+        return view('categorys.edit-category', compact('category', 'fuelTypes'));
+
     }
+
+
 
     // ✅ Update a category
     public function update(Request $request, $code)
@@ -54,7 +80,9 @@ class FuelCategoryController extends Controller
 
         $category->update($request->only(['name', 'fuel_type_code', 'discount_price']));
 
-        return response()->json(['message' => 'Category updated successfully', 'category' => $category]);
+        // return response()->json(['message' => 'Category updated successfully', 'category' => $category]);
+        return redirect()->route('category.edit', $category->code)
+        ->with('success', 'Category updated successfully!');
     }
 
     // ✅ Delete a category

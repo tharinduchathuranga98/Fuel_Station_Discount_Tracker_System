@@ -174,65 +174,104 @@
 
     <script>
         $(document).ready(function() {
-            // Initialize select2 for both dropdowns on page load
-            $('.select2').select2({
-                placeholder: "Select an option",
-                allowClear: true
-            });
-
-            // Handle fuel type change to dynamically update categories
-            $('#fuel_type').change(function() {
-                let fuelTypeCode = $(this).val();
-                let categoryDropdown = $('#category');
-                let categoryContainer = $('#category-container');
-
-                // If no fuel type is selected, hide category dropdown
-                if (!fuelTypeCode) {
-                    categoryContainer.hide();
-                    return;
-                }
-
-                // Show the category dropdown if a fuel type is selected
-                categoryContainer.show();
-
-                // Trigger AJAX to fetch categories based on selected fuel type
-                $.ajax({
-                    url: '{{ route("getCategoriesByFuelType") }}',
-                    type: 'GET',
-                    data: { fuel_type_code: fuelTypeCode },
-                    success: function(response) {
-                        // Clear the category dropdown and add the default option
-                        categoryDropdown.empty().append('<option value="" disabled>Select Category</option>');
-
-                        // Loop through the response object and populate the category dropdown
-                        $.each(response, function(code, name) {
-                            categoryDropdown.append(`<option value="${code}" ${code == "{{ old('category', $vehicle->category) }}" ? 'selected' : ''}>${name}</option>`);
-                        });
-
-                        // Destroy the select2 instance before re-initializing
-                        categoryDropdown.select2('destroy');
-
-                        // Re-initialize select2 after updating the dropdown
-                        categoryDropdown.select2({
-                            placeholder: "Select Category",
-                            allowClear: true
-                        });
-
-                        // Trigger 'change' event on the dropdown to update the selection
-                        categoryDropdown.trigger('change');
-                    },
-                    error: function(xhr) {
-                        console.error("Error fetching categories:", xhr.responseText);
-                    }
-                });
-            });
-
-            // Trigger AJAX immediately if fuel type is already selected (on page load)
-            let selectedFuelType = $('#fuel_type').val();
-            if (selectedFuelType) {
-                $('#fuel_type').change(); // Trigger change event to populate the category dropdown
-            }
+        // Initialize select2 for both dropdowns on page load
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
         });
+
+        // Handle fuel type change to dynamically update categories
+        $('#fuel_type').change(function() {
+            let fuelTypeCode = $(this).val();
+            let categoryDropdown = $('#category');
+            let categoryContainer = $('#category-container');
+
+            // If no fuel type is selected, hide category dropdown
+            if (!fuelTypeCode) {
+                categoryContainer.hide();
+                return;
+            }
+
+            // Show the category dropdown if a fuel type is selected
+            categoryContainer.show();
+
+            // Trigger AJAX to fetch categories based on selected fuel type
+            $.ajax({
+                url: '{{ route("getCategoriesByFuelType") }}',
+                type: 'GET',
+                data: { fuel_type_code: fuelTypeCode },
+                success: function(response) {
+                    console.log("Categories received:", response); // Debugging line
+
+                    // Clear the category dropdown and add the default option
+                    categoryDropdown.empty().append('<option value="" disabled>Select Category</option>');
+
+                    // Loop through the response object and populate the category dropdown
+                    $.each(response, function(code, name) {
+                        categoryDropdown.append(`<option value="${code}" ${code == "{{ old('category') }}" ? 'selected' : ''}>${name}</option>`);
+                    });
+
+                    // Destroy the select2 instance before re-initializing
+                    categoryDropdown.select2('destroy');
+
+                    // Re-initialize select2 after updating the dropdown
+                    categoryDropdown.select2({
+                        placeholder: "Select Category",
+                        allowClear: true
+                    });
+
+                    // Trigger 'change' event on the dropdown to update the selection
+                    categoryDropdown.trigger('change');
+                },
+                error: function(xhr) {
+                    console.error("Error fetching categories:", xhr.responseText);
+                }
+            });
+        });
+
+        // Trigger AJAX immediately if fuel type is already selected (on page load)
+        let selectedFuelType = $('#fuel_type').val();
+        if (selectedFuelType) {
+            $('#fuel_type').change(); // Trigger change event to populate the category dropdown
+        }
+    });
+
+    $(document).ready(function() {
+        // Hide select2 containers initially
+        setTimeout(function() {
+            $('#fuel_type').next('.select2-container').hide();
+            $('#category').next('.select2-container').hide();
+        }, 500); // Adjust the delay time if needed
+
+        // Hide select2 container for fuel type when the dropdown is opening or closing
+        $('#fuel_type').on('select2:opening', function() {
+            $(this).next('.select2-container').hide();
+        });
+
+        $('#fuel_type').on('select2:closing', function() {
+            $(this).next('.select2-container').hide();
+        });
+
+        // Similarly hide the select2 container for category
+        $('#category').on('select2:opening', function() {
+            $(this).next('.select2-container').hide();
+        });
+
+        $('#category').on('select2:closing', function() {
+            $(this).next('.select2-container').hide();
+        });
+
+        // Prevent category select2 from reappearing after changing fuel type
+        $('#fuel_type').on('change', function() {
+            // Ensure category select2 container stays hidden when fuel type changes
+            $('#category').next('.select2-container').hide();
+        });
+
+        // Optionally, you can add this for the category field too, to handle its reappearance in case of other interactions
+        $('#category').on('change', function() {
+            $(this).next('.select2-container').hide();
+        });
+    });
     </script>
 
 </x-app-layout>
