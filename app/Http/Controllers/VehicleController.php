@@ -37,6 +37,34 @@ class VehicleController extends Controller
         return view('vehicles.vehicle-management', compact('vehicles'));
     }
 
+    public function checkVehicle(Request $request)
+    {
+        // Validate request input
+        $request->validate([
+            'number_plate' => 'required|string|max:255',
+        ]);
+
+        // Find vehicle by number plate
+        $vehicle = Vehicle::where('number_plate', $request->number_plate)->first();
+
+        if ($vehicle) {
+            return response()->json([
+                "success" => true,
+                "message" => "Vehicle found",
+                "data" => [
+                    "number_plate" => $vehicle->number_plate,
+                    "owner_name" => $vehicle->owner_name,
+                    "fuel_type" => $vehicle->fuelType->name,
+                ]
+            ], 200);
+        } else {
+            return response()->json([
+                "success" => false,
+                "message" => "Vehicle not found",
+            ], 404);
+        }
+    }
+
 
     public function create()
     {

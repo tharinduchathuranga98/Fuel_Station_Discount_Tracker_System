@@ -51,3 +51,4 @@ Route::post('/fuel-categories', [FuelCategoryController::class, 'store']);
 Route::get('/fuel-categories/{code}', [FuelCategoryController::class, 'show']);
 Route::put('/fuel-categories/{code}', [FuelCategoryController::class, 'update']);
 Route::delete('/fuel-categories/{code}', [FuelCategoryController::class, 'destroy']);
+Route::post('/check-vehicle', [VehicleController::class, 'checkVehicle']);
