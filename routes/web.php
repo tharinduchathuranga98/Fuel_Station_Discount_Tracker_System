@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\FuelCategoryController;
 use App\Http\Controllers\FuelTypeController;
+use App\Http\Controllers\RefuelingController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
@@ -120,3 +121,5 @@ Route::put('/categorys/category-management/{code}', [FuelCategoryController::cla
 Route::get('/categorys/category-management/create', [FuelCategoryController::class, 'create'])->name('category.create')->middleware('auth');
 Route::post('/categorys/category-management/create', [FuelCategoryController::class, 'store'])->name('category.store')->middleware('auth');
 // Route::delete('/fuel-type/fuel-type-management/{id}', [FuelTypeController::class, 'destroy'])->name('fuel-type.destroy')->middleware('auth');
+
+Route::get('/refueling/daily-report', [RefuelingController::class, 'dailyReport']);

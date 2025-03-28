@@ -125,9 +125,35 @@
                                             </span>
                                         @enderror
                                     </div>
+                                    <div class="col-6">
+                                        <label for="company_name">Company Name</label>
+                                        <input type="text" name="company_name" id="company_name"
+
+                                            class="form-control"
+                                            >
+
+
+
+                                        @error('owner_phone')
+                                            <span class="text-danger text-sm" style="display: inline-block; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 8px 12px; border-radius: 5px; font-size: 0.875rem; margin-top: 5px;">
+                                                <i class="fa fa-exclamation-circle" style="margin-right: 5px;"></i> {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
 
                                 </div>
 
+                                <div class="row">
+                                    <!-- Owner Phone Input -->
+                                    <div class="col-6">
+                                        <label for="status">Status</label>
+                                        <select name="status" class="form-control">
+                                            <option value="credit">Credit User</option>
+                                            <option value="debit">Debit User</option>
+                                        </select>
+                                    </div>
+
+                                </div>
 
 
 

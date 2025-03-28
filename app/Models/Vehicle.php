@@ -9,14 +9,19 @@ class Vehicle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['number_plate', 'owner_name', 'owner_phone', 'qr_code', 'fuel_type', 'category'];
-    public function category()
-    {
-        return $this->belongsTo(FuelCategory::class, 'category', 'code'); // 'category' should be the foreign key referring to FuelCategory
-    }
+    protected $fillable = ['number_plate', 'owner_name', 'company_name', 'owner_phone', 'fuel_type', 'category', 'qr_code', 'status'];
 
+    // Always load relationships
+    protected $with = ['fuelType', 'category'];
+
+    // Define relationship using `code` instead of `id`
     public function fuelType()
     {
-        return $this->belongsTo(FuelType::class, 'fuel_type', 'code'); // 'fuel_type' should be the foreign key referring to FuelType
+        return $this->belongsTo(FuelType::class, 'fuel_type', 'code'); // `fuel_type` in vehicles references `code` in fuel_types
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(FuelCategory::class, 'category', 'code');
     }
 }

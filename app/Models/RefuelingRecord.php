@@ -13,6 +13,8 @@ class RefuelingRecord extends Model
         'number_plate', // Vehicle number plate
         'liters', // Fuel quantity
         'total_price',
+        'total_discount',
+        'fuel_type',
         'refueled_at', // Date & time of refueling
     ];
 }

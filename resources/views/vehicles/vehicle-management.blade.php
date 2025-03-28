@@ -52,6 +52,8 @@
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Number Plate</th>
                                             <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">Owner Name</th>
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Fuel Type</th>
+                                            <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Company</th>
+                                            <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Status</th>
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Created at</th>
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
@@ -63,6 +65,8 @@
                                                 <td class="text-center text-xs font-weight-bold">{{ $vehicle->number_plate }}</td>
                                                 <td class="text-xs font-weight-bold">{{ $vehicle->owner_name }}</td>
                                                 <td class="text-center text-xs font-weight-bold">{{ $vehicle->fuelType->name ?? 'N/A' }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ $vehicle->company_name ?? 'N/A' }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ $vehicle->status ?? 'N/A' }}</td>
                                                 <td class="text-center text-xs font-weight-bold">{{ $vehicle->created_at->format('Y-m-d') }}</td>
                                                 <td class="text-center">
                                                     <a href="{{ route('vehicles.edit', $vehicle->number_plate) }}" class="btn btn-warning btn-sm" style="margin: 0;">Edit</a>

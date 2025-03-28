@@ -25,6 +25,8 @@ class VehicleController extends Controller
             $search = $request->search;
             $query->where('number_plate', 'LIKE', "%{$search}%")
                 ->orWhere('owner_name', 'LIKE', "%{$search}%")
+                ->orWhere('company_name', 'LIKE', "%{$search}%")
+                ->orWhere('status', 'LIKE', "%{$search}%")
                 ->orWhereHas('fuelType', function ($q) use ($search) {
                     $q->where('name', 'LIKE', "%{$search}%");
                 });
@@ -39,12 +41,6 @@ class VehicleController extends Controller
 
     public function checkVehicle(Request $request)
     {
-        // Validate request input
-        $request->validate([
-            'number_plate' => 'required|string|max:255',
-        ]);
-
-        // Find vehicle by number plate
         $vehicle = Vehicle::where('number_plate', $request->number_plate)->first();
 
         if ($vehicle) {
@@ -58,12 +54,10 @@ class VehicleController extends Controller
                 ]
             ], 200);
         } else {
-            return response()->json([
-                "success" => false,
-                "message" => "Vehicle not found",
-            ], 404);
+            return response()->json(["success" => false, "message" => "Vehicle not found"], 404);
         }
     }
+
 
 
     public function create()
@@ -87,6 +81,7 @@ class VehicleController extends Controller
             'owner_phone' => 'required|string|max:9|regex:/^[0-9]{9}$/', // Validate 9 digits
             'fuel_type' => 'required|exists:fuel_types,code',
             'category' => 'required|string|max:50',
+            'status' => 'required|in:credit,debit',
         ]);
 
         if ($validator->fails()) {
@@ -103,9 +98,11 @@ class VehicleController extends Controller
         $vehicle = Vehicle::create([
             'number_plate' => $request->number_plate,
             'owner_name' => $request->owner_name,
+            'company_name' => $request->company_name,  // Store company name
             'owner_phone' => $ownerPhone, // Store the phone number with '94' prepended
             'fuel_type' => $request->fuel_type,
             'category' => $request->category,
+            'status' => $request->status,  // Store status
             'qr_code' => $qrCodeBase64  // Store Base64 QR code
         ]);
 
@@ -145,19 +142,24 @@ class VehicleController extends Controller
 
     public function edit($number_plate)
     {
+        // Fetch vehicle by number plate
         $vehicle = Vehicle::where('number_plate', $number_plate)->first();
 
+        // If vehicle not found, redirect with error
         if (!$vehicle) {
             return redirect()->route('vehicle-management')->with('error', 'Vehicle not found.');
         }
 
         // Fetch fuel types by their code
         $fuelTypes = FuelType::pluck('name', 'code');  // Key: code, Value: name
-        // Fetch categories that belong to selected fuel type
-        $categories = FuelCategory::where('code', $vehicle->fuel_type)->pluck('name', 'code');
 
+        // Fetch categories based on the selected fuel type of the vehicle
+        $categories = FuelCategory::where('fuel_type_code', $vehicle->fuel_type)->pluck('name', 'code');
+
+        // Pass the vehicle, fuel types, and categories to the view
         return view('vehicles.edit-vehicle', compact('vehicle', 'fuelTypes', 'categories'));
     }
+
 
     public function getCategoriesByFuelType(Request $request)
     {
@@ -221,6 +223,7 @@ class VehicleController extends Controller
             'owner_phone' => 'required|string|max:9|regex:/^[0-9]{9}$/', // Validate 9 digits
             'fuel_type' => 'required|string|max:50',
             'category' => 'required|string|max:50',
+            'status' => 'required|in:credit,debit',
         ]);
 
         if ($validator->fails()) {
@@ -233,7 +236,7 @@ class VehicleController extends Controller
         }
 
         // Update vehicle details
-        $vehicle->update($request->only(['owner_name', 'owner_phone', 'fuel_type', 'category']));
+        $vehicle->update($request->only(['owner_name', 'company_name', 'owner_phone', 'fuel_type', 'category', 'status']));
 
         // Success message
         $message = "Dear {$vehicle->owner_name}, Your vehicle profile has been successfully updated. Number Plate: {$vehicle->number_plate}";
