@@ -122,4 +122,6 @@ Route::get('/categorys/category-management/create', [FuelCategoryController::cla
 Route::post('/categorys/category-management/create', [FuelCategoryController::class, 'store'])->name('category.store')->middleware('auth');
 // Route::delete('/fuel-type/fuel-type-management/{id}', [FuelTypeController::class, 'destroy'])->name('fuel-type.destroy')->middleware('auth');
 
-Route::get('/refueling/daily-report', [RefuelingController::class, 'dailyReport']);
+Route::get('/refueling/daily-report', [RefuelingController::class, 'dailyReport'])->name('daylyreport.view')->middleware('auth');
+Route::get('/refueling/monthly-report', [RefuelingController::class, 'monthlyReport'])->name('monthlyreport.test')->middleware('auth');
+

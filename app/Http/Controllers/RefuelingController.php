@@ -91,7 +91,13 @@ class RefuelingController extends Controller
         $fuelTypeSales = [];
 
         // Loop through each group (fuel type) and calculate total liters, sales, and discount
-        foreach ($groupedByFuelType as $fuelType => $records) {
+        foreach ($groupedByFuelType as $fuelTypeCode => $records) {
+            // Fetch the fuel type name from the FuelType model using the code
+            $fuelType = FuelType::where('code', $fuelTypeCode)->first();
+
+            // Get the fuel type name, default to 'Unknown' if not found
+            $fuelTypeName = $fuelType ? $fuelType->name : 'Unknown';
+
             $totalLitersForType = $records->sum('liters');
             $totalSalesForType = $records->sum('total_price');
             $totalDiscountForType = $records->sum('total_discount');
@@ -103,7 +109,7 @@ class RefuelingController extends Controller
 
             // Format the values and store in the result array
             $fuelTypeSales[] = [
-                'fuel_type' => $fuelType,
+                'fuel_type' => $fuelTypeName,  // Use the fuel type name
                 'total_liters' => number_format($totalLitersForType, 2, '.', ''),
                 'total_sales' => number_format($totalSalesForType, 2, '.', ''),
                 'total_discount' => number_format($totalDiscountForType, 2, '.', ''),
@@ -116,7 +122,7 @@ class RefuelingController extends Controller
 
         // Prepare response data
         $report = [
-            'date' => $formattedDate, // Include date in the response
+            'date' => $formattedDate,  // Include date in the response
             'fuel_types' => $fuelTypeSales,  // Sales for each fuel type
             'total_sales' => $formattedTotalSales,
             'total_liters' => number_format($totalLiters, 2, '.', ''),
@@ -125,6 +131,72 @@ class RefuelingController extends Controller
 
         return response()->json([
             'message' => 'Daily report generated successfully',
+            'report' => $report
+        ], 200);
+    }
+
+    public function monthlyReport(Request $request)
+    {
+        // Get the start of the current month (first day of the month)
+        $startOfMonth = now()->startOfMonth();  // Start of the current month
+        $endOfMonth = now()->endOfMonth();      // End of the current month
+
+        // Fetch refueling records for the current month
+        $refuelingRecords = RefuelingRecord::where('refueled_at', '>=', $startOfMonth)
+            ->where('refueled_at', '<=', $endOfMonth)
+            ->get();
+
+        // Group the records by fuel_type
+        $groupedByFuelType = $refuelingRecords->groupBy('fuel_type');
+
+        // Initialize variables to store totals
+        $totalSales = 0;
+        $totalLiters = 0;
+        $totalDiscount = 0;
+
+        $fuelTypeSales = [];
+
+        // Loop through each group (fuel type) and calculate total liters, sales, and discount
+        foreach ($groupedByFuelType as $fuelTypeCode => $records) {
+            // Fetch the fuel type name from the FuelType model using the code
+            $fuelType = FuelType::where('code', $fuelTypeCode)->first();
+
+            // Get the fuel type name, default to 'Unknown' if not found
+            $fuelTypeName = $fuelType ? $fuelType->name : 'Unknown';
+
+            $totalLitersForType = $records->sum('liters');
+            $totalSalesForType = $records->sum('total_price');
+            $totalDiscountForType = $records->sum('total_discount');
+
+            // Add to the overall totals
+            $totalSales += $totalSalesForType;
+            $totalLiters += $totalLitersForType;
+            $totalDiscount += $totalDiscountForType;
+
+            // Format the values and store in the result array
+            $fuelTypeSales[] = [
+                'fuel_type' => $fuelTypeName,  // Use the fuel type name
+                'total_liters' => number_format($totalLitersForType, 2, '.', ''),
+                'total_sales' => number_format($totalSalesForType, 2, '.', ''),
+                'total_discount' => number_format($totalDiscountForType, 2, '.', ''),
+            ];
+        }
+
+        // Format the overall totals
+        $formattedTotalSales = number_format($totalSales, 2, '.', '');
+        $formattedTotalDiscount = number_format($totalDiscount, 2, '.', '');
+
+        // Prepare response data
+        $report = [
+            'month' => now()->format('F Y'),  // Include month in the response
+            'fuel_types' => $fuelTypeSales,   // Sales for each fuel type
+            'total_sales' => $formattedTotalSales,
+            'total_liters' => number_format($totalLiters, 2, '.', ''),
+            'total_discount' => $formattedTotalDiscount,
+        ];
+
+        return response()->json([
+            'message' => 'Monthly report generated successfully',
             'report' => $report
         ], 200);
     }
