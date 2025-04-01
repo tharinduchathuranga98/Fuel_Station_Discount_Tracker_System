@@ -51,6 +51,9 @@ class VehicleController extends Controller
                     "number_plate" => $vehicle->number_plate,
                     "owner_name" => $vehicle->owner_name,
                     "fuel_type" => $vehicle->fuelType->name,
+                    "company_name" => $vehicle->company_name,
+                    "status" => $vehicle->status,
+                    "category" => $vehicle->category,
                 ]
             ], 200);
         } else {

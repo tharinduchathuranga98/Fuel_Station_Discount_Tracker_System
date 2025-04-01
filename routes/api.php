@@ -54,3 +54,5 @@ Route::delete('/fuel-categories/{code}', [FuelCategoryController::class, 'destro
 Route::post('/check-vehicle', [VehicleController::class, 'checkVehicle']);
 Route::get('/refueling/daily-report', [RefuelingController::class, 'dailyReport']);
 Route::get('/refueling/monthly-report', [RefuelingController::class, 'monthlyReport']);
+// Route to fetch all refueling records
+Route::get('/refueling-records', [RefuelingController::class, 'getRefuelingRecords']);
