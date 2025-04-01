@@ -6,8 +6,8 @@ use App\Models\FuelCategory;
 use App\Models\FuelType;
 use App\Models\RefuelingRecord;
 use App\Models\Vehicle;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class RefuelingController extends Controller
 {
@@ -67,8 +67,6 @@ class RefuelingController extends Controller
             'data'    => $refuelingRecord,
         ], 201);
     }
-
-
 
     public function getRefuelingRecords(Request $request)
     {
@@ -223,4 +221,40 @@ class RefuelingController extends Controller
             'report'  => $report,
         ], 200);
     }
+
+    public function index(Request $request)
+    {
+        $query = RefuelingRecord::query();
+
+        // Check if there is a search term in the request
+        if ($request->has('search') && ! empty($request->search)) {
+            $search = $request->search;
+
+            // Apply search filters for number_plate, fuel_type, and refueled_at fields
+            $query->where('number_plate', 'LIKE', "%{$search}%")
+                ->orWhere('fuel_type', 'LIKE', "%{$search}%")
+                ->orWhere('refueled_at', 'LIKE', "%{$search}%");
+        }
+
+        // Optionally, filter by a date range if provided
+        if ($request->has('start_date') && ! empty($request->start_date)) {
+            $startDate = $request->start_date;
+            $query->whereDate('refueled_at', '>=', $startDate);
+        }
+
+        if ($request->has('end_date') && ! empty($request->end_date)) {
+            $endDate = $request->end_date;
+            $query->whereDate('refueled_at', '<=', $endDate);
+        }
+
+        // Join with the fuel_types table to get fuel type name
+        $refuelingRecords = $query->select('refueling_records.*', 'fuel_types.name as fuel_type_name')
+            ->leftJoin('fuel_types', 'refueling_records.fuel_type', '=', 'fuel_types.code')
+            ->orderBy('refueled_at', 'desc') // Order by refueled_at in descending order
+            ->paginate(10);                  // Paginate the records
+
+        // Return the view with the data
+        return view('refueling.refueling-management', compact('refuelingRecords'));
+    }
+
 }

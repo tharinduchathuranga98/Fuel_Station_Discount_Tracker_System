@@ -125,3 +125,4 @@ Route::post('/categorys/category-management/create', [FuelCategoryController::cl
 Route::get('/refueling/daily-report', [RefuelingController::class, 'dailyReport'])->name('daylyreport.view')->middleware('auth');
 Route::get('/refueling/monthly-report', [RefuelingController::class, 'monthlyReport'])->name('monthlyreport.test')->middleware('auth');
 
+Route::get('/refueling/refueling-management', [RefuelingController::class, 'index'])->name('refueling-management')->middleware('auth');
