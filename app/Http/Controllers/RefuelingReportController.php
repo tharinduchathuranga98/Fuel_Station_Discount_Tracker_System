@@ -10,11 +10,19 @@ use App\Models\RefuelingRecord;
 
 class RefuelingReportController extends Controller
 {
+    // Method to show the form for selecting the month
+    public function showSelectMonthForm()
+    {
+        return view('reports.create-report');
+    }
+
+    // Existing method to generate the report
     public function generateMonthlyReport(Request $request)
     {
-        // Validate the month parameter (for example, "2025-03")
+        // Validate the month and report_type parameters
         $validated = $request->validate([
             'month' => 'required|date_format:Y-m',
+            'report_type' => 'required|in:summary,detailed', // Add report type validation
         ]);
 
         // Get the start and end of the month
@@ -48,6 +56,7 @@ class RefuelingReportController extends Controller
                     'total_sales'    => 0,
                     'total_discount' => 0,
                     'total_liters'   => 0,
+                    'records'        => [], // Add this to store detailed records
                 ];
             }
 
@@ -55,6 +64,22 @@ class RefuelingReportController extends Controller
             $fuelData[$record->fuel_type]['total_sales'] += $record->total_price;
             $fuelData[$record->fuel_type]['total_discount'] += $record->total_discount;
             $fuelData[$record->fuel_type]['total_liters'] += $record->liters;
+
+            // Store detailed records for detailed report
+            $fuelData[$record->fuel_type]['records'][] = [
+                'refueled_at'    => $record->refueled_at,
+                'liters'         => $record->liters,
+                'total_price'    => $record->total_price,
+                'total_discount' => $record->total_discount,
+            ];
+        }
+
+        // Modify fuel data based on report type
+        if ($validated['report_type'] == 'summary') {
+            // For Summary Report, remove the detailed records (just totals)
+            foreach ($fuelData as $fuelType => &$data) {
+                unset($data['records']);
+            }
         }
 
         // Initialize Dompdf for PDF generation
@@ -69,6 +94,7 @@ class RefuelingReportController extends Controller
             'fuelData'  => $fuelData,
             'startDate' => $startDate->format('F j, Y'),
             'endDate'   => $endDate->format('F j, Y'),
+            'reportType' => $validated['report_type'], // Pass the report type to the view
         ])->render();
 
         // Load the HTML into Dompdf
@@ -83,6 +109,4 @@ class RefuelingReportController extends Controller
         // Stream the file to the browser for download
         return $dompdf->stream("monthly_report_{$validated['month']}.pdf");
     }
-
-
 }
