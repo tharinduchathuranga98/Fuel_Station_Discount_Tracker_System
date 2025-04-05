@@ -10,8 +10,11 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\FuelCategoryController;
 use App\Http\Controllers\FuelTypeController;
 use App\Http\Controllers\RefuelingController;
+use App\Http\Controllers\CreditController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
+use App\Http\Controllers\RefuelingReportController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -126,3 +129,8 @@ Route::get('/refueling/daily-report', [RefuelingController::class, 'dailyReport'
 Route::get('/refueling/monthly-report', [RefuelingController::class, 'monthlyReport'])->name('monthlyreport.test')->middleware('auth');
 
 Route::get('/refueling/refueling-management', [RefuelingController::class, 'index'])->name('refueling-management')->middleware('auth');
+Route::post('refueling-report', [RefuelingReportController::class, 'generateReport'])->name('refueling-report')->middleware('auth');
+Route::get('/refueling-report-form', [RefuelingReportController::class, 'generateReport'])->name('refueling-report-form')->middleware('auth');
+Route::get('/credit-list', [CreditController::class, 'showCreditList'])->name('credit-list')->middleware('auth');
+Route::post('/pay-credit', [CreditController::class, 'storeDebit'])->name('credits.pay')->middleware('auth');
+Route::get('/reports/monthly', [RefuelingReportController::class, 'generateMonthlyReport'])->name('report-month')->middleware('auth');

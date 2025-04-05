@@ -1,6 +1,6 @@
 <!--
 =========================================================
-* Corporate UI - v1.0.0
+
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/corporate-ui
@@ -20,7 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     @if (config('app.is_demo'))
         <title itemprop="name">
-            Corporate UI Dashboard Laravel by Creative Tim & UPDIVISION
+            Fuel Discount Management System by Tharidnu Chathuranga
         </title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:card" content="summary_large_image">
@@ -38,7 +38,7 @@
             content="creative tim, updivision, html dashboard, laravel, api, html css dashboard laravel,  Corporate UI Dashboard Laravel,  Corporate UI Laravel,  Corporate Dashboard Laravel, UI Dashboard Laravel, Laravel admin, laravel dashboard, Laravel dashboard, laravel admin, web dashboard, bootstrap 5 dashboard laravel, bootstrap 5, css3 dashboard, bootstrap 5 admin laravel, frontend, responsive bootstrap 5 dashboard, corporate dashboard laravel,  Corporate UI Dashboard Laravel">
         <meta property="og:app_id" content="655968634437471">
         <meta property="og:type" content="product">
-        <meta property="og:title" content="Corporate UI Dashboard Laravel by Creative Tim & UPDIVISION">
+        <meta property="og:title" content="Fuel Discount Management System by Tharidnu Chathuranga">
         <meta property="og:url" content="https://www.creative-tim.com/live/corporate-ui-dashboard-laravel">
         <meta property="og:image"
             content="https://s3.amazonaws.com/creativetim_bucket/products/737/original/corporate-ui-dashboard-laravel.jpg?1695288974">
@@ -52,7 +52,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}">
     <title>
-        Corporate UI by Creative Tim & UPDIVISION
+        Fuel Discount Management System by Tharidnu Chathuranga
     </title>
     <!--     Fonts and icons     -->
     <link
@@ -91,14 +91,14 @@
 
     {{ $slot }}
 
-    <div class="fixed-plugin">
+    {{-- <div class="fixed-plugin">
         <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
             <i class="fa fa-cog py-2"></i>
         </a>
         <div class="card shadow-lg ">
             <div class="card-header pb-0 pt-3 ">
                 <div class="float-start">
-                    <h5 class="mt-3 mb-0">Corporate UI Configurator</h5>
+                    <h5 class="mt-3 mb-0">1</h5>
                     <p>See our dashboard options.</p>
                 </div>
                 <div class="float-end mt-4">
@@ -170,7 +170,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <!--   Core JS Files   -->
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>

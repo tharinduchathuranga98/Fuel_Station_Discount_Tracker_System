@@ -12,11 +12,11 @@
                                     <p class="text-sm">See information about all Refueling Records</p>
                                 </div>
                                 <div class="ms-auto d-flex">
-                                    <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2" onclick="window.location.href='{{ route('vehicles.create') }}'">
+                                    <button type="button" class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2" onclick="window.location.href='{{ route('refueling-report-form') }}'">
                                         <span class="btn-inner--icon">
                                             <!-- Icon goes here if needed -->
                                         </span>
-                                        <span class="btn-inner--text">Add Vehicle</span>
+                                        <span class="btn-inner--text">Generate Reports</span>
                                     </button>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                                         <tr>
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">#</th>
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Number Plate</th>
-                                            <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">Liters</th>
+                                            <th class="text-center text-secondary text-xs font-weight-semibold opacity-7 ps-2">Liters</th>
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Fuel Type</th>
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Price</th>
                                             <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">Discount</th>
@@ -63,12 +63,12 @@
                                             <tr>
 
                                                 <td class="text-center text-xs font-weight-bold">{{ $refuelingRecords->firstItem() + $loop->index }}</td>
-                                                <td class="text-center">{{ $refuelingRecord->number_plate }}</td>
-                                                <td class="ps-2">{{ $refuelingRecord->liters }}</td>
-                                                <td class="text-center">{{ $refuelingRecord->fuel_type_name }}</td>
-                                                <td class="text-center">{{ $refuelingRecord->total_price }}</td>
-                                                <td class="text-center">{{ $refuelingRecord->total_discount }}</td>
-                                                <td class="text-center">{{ \Carbon\Carbon::parse($refuelingRecord->refueled_at)->format('d M, Y H:i') }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ $refuelingRecord->number_plate }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ $refuelingRecord->liters }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ $refuelingRecord->fuel_type_name }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ $refuelingRecord->total_price }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ $refuelingRecord->total_discount }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ \Carbon\Carbon::parse($refuelingRecord->refueled_at)->format('d M, Y H:i') }}</td>
 
                                             </tr>
                                         @empty

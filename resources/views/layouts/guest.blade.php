@@ -1,17 +1,4 @@
-<!--
-=========================================================
-* Corporate UI - v1.0.0
-=========================================================
 
-* Product Page: https://www.creative-tim.com/product/corporate-ui
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     @if (config('app.is_demo'))
         <title itemprop="name">
-            Corporate UI Dashboard Laravel by Creative Tim & UPDIVISION
+            Fuel Discount Management System by Tharidnu Chathuranga
         </title>
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:card" content="summary_large_image">
@@ -52,7 +39,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     <title>
-        Corporate UI by Creative Tim & UPDIVISION
+        Fuel Discount Management System by Tharidnu Chathuranga
     </title>
     <!--     Fonts and icons     -->
     <link

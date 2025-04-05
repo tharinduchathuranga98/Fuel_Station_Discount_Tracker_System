@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\SmsHelper;
+use App\Models\CreditLedger;
 use App\Models\FuelCategory;
 use App\Models\FuelType;
 use App\Models\RefuelingRecord;
@@ -17,6 +18,7 @@ class RefuelingController extends Controller
         $validated = $request->validate([
             'number_plate' => 'required|string',
             'liters'       => 'required|numeric|min:1',
+            'status'       => 'required|in:credit,debit',
         ]);
 
         // Find the vehicle by number plate
@@ -57,6 +59,16 @@ class RefuelingController extends Controller
             'total_discount' => $total_discount, // Save discount
             'refueled_at'    => now(),
         ]);
+
+        // If the vehicle status is 'credit', create the ledger entry
+        if ($validated['status'] === 'credit') {
+            CreditLedger::create([
+                'number_plate'     => $validated['number_plate'],
+                'owner_phone'      => $vehicle->owner_phone,
+                'amount'           => $totalPrice, // Store the total price of the refuel as credit
+                'transaction_type' => 'credit',    // Transaction type is 'credit'
+            ]);
+        }
 
         // Send SMS to the vehicle owner
         $message = "Your vehicle has been refueled with {$validated['liters']} liters for Rs: {$formattedTotalPrice}. You got a discount of Rs: {$formattedTotalDiscount}. Number Plate: {$vehicle->number_plate}";
@@ -251,10 +263,12 @@ class RefuelingController extends Controller
         $refuelingRecords = $query->select('refueling_records.*', 'fuel_types.name as fuel_type_name')
             ->leftJoin('fuel_types', 'refueling_records.fuel_type', '=', 'fuel_types.code')
             ->orderBy('refueled_at', 'desc') // Order by refueled_at in descending order
-            ->paginate(10);                  // Paginate the records
+            ->paginate(15);                  // Paginate the records
 
         // Return the view with the data
         return view('refueling.refueling-management', compact('refuelingRecords'));
     }
+
+    
 
 }
